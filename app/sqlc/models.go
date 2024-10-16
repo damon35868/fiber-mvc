@@ -5,7 +5,7 @@
 package sqlc
 
 import (
-	"time"
+	"database/sql"
 )
 
 type User struct {
@@ -21,7 +21,7 @@ type User struct {
 	// 头像
 	Avatar string `json:"avatar"`
 	// 创建时间
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt sql.NullTime `json:"createdAt"`
 	// 更新时间
-	UpdatedAt time.Time `json:"updatedAt"`
+	UpdatedAt sql.NullTime `json:"updatedAt"`
 }

@@ -91,10 +91,16 @@ func (q *Queries) GetUserByNickName(ctx context.Context, nickname string) (User,
 const listUsers = `-- name: ListUsers :many
 SELECT id, nickname, password, gender, age, avatar, created_at, updated_at FROM users
 ORDER BY id
+LIMIT ? OFFSET ?
 `
 
-func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, listUsers)
+type ListUsersParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, listUsers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package adminService
 
 import (
 	"encoding/json"
+	"fiber-mvc/app/common/utils"
 	"fiber-mvc/app/dto"
 	"fiber-mvc/app/sqlc"
 	"fmt"
@@ -15,8 +16,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *AdminService) GetUsers(c *fiber.Ctx) error {
-	return common.Response(c, "ok")
+func (s *AdminService) GetUsers(c *fiber.Ctx, req dto.PageReqDto) error {
+	limit, Offset := utils.FormatPage(req)
+
+	users, err := s.Storage.Repository.ListUsers(c.Context(), sqlc.ListUsersParams{
+		Limit:  limit,
+		Offset: Offset,
+	})
+
+	if err != nil {
+		return common.HttpException(c, fiber.StatusBadRequest, err.Error())
+	}
+	return common.Response(c, &users)
 }
 
 // 事务示例

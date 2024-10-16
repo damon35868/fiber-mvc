@@ -12,3 +12,8 @@ type Storage struct {
 	Repository *sqlc.Queries
 	Cache      *redis.Storage
 }
+
+type DBQueryPage struct {
+	Limit  int32
+	Offset int32
+}

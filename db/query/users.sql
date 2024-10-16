@@ -8,7 +8,8 @@ WHERE nickname = ? LIMIT 1;
 
 -- name: ListUsers :many
 SELECT * FROM users
-ORDER BY id;
+ORDER BY id
+LIMIT ? OFFSET ?;
 
 -- name: CreateUser :execresult
 INSERT INTO users (

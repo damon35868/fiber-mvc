@@ -9,7 +9,14 @@ import (
 )
 
 func (s *AdminController) GetUsers(c *fiber.Ctx) error {
-	return s.Service.Admin.GetUsers(c)
+	var pageDto dto.PageReqDto
+	err := c.QueryParser(&pageDto)
+	if err != nil {
+		return common.HttpException(c, fiber.StatusBadRequest, err.Error())
+	}
+	utils.Validate.Struct(pageDto)
+
+	return s.Service.Admin.GetUsers(c, pageDto)
 }
 
 func (s *AdminController) CreateUser(c *fiber.Ctx) error {
