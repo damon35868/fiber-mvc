@@ -1,0 +1,66 @@
+definitions:
+  dto.UserResp:
+    properties:
+      age:
+        description: 年龄
+        type: integer
+      avatar:
+        description: 头像
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      gender:
+        description: 用户性别
+        type: integer
+      id:
+        type: integer
+      nickname:
+        description: 用户名
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /user/{id}:
+    get:
+      parameters:
+      - description: 路径ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResp'
+      summary: admin - 用户详情
+      tags:
+      - admin - 用户相关
+  /user/login:
+    post:
+      parameters:
+      - description: 路径ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求体
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserResp'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResp'
+      summary: admin - 登陆接口
+      tags:
+      - admin - 用户相关
+swagger: "2.0"
