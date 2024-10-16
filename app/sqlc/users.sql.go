@@ -12,9 +12,9 @@ import (
 
 const createUser = `-- name: CreateUser :execresult
 INSERT INTO users (
-  nickname, gender, age, avatar
+  nickname, gender, age, avatar, password
 ) VALUES (
-  ?, ?, ?, ?
+  ?, ?, ?, ?, ?
 )
 `
 
@@ -23,6 +23,7 @@ type CreateUserParams struct {
 	Gender   int    `json:"gender"`
 	Age      int    `json:"age"`
 	Avatar   string `json:"avatar"`
+	Password string `json:"password"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error) {
@@ -31,6 +32,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (sql.Res
 		arg.Gender,
 		arg.Age,
 		arg.Avatar,
+		arg.Password,
 	)
 }
 
@@ -121,4 +123,30 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateUser = `-- name: UpdateUser :execresult
+UPDATE users
+SET nickname=?, gender=?, age=?, avatar=?, password=?
+WHERE id = ?
+`
+
+type UpdateUserParams struct {
+	Nickname string `json:"nickname"`
+	Gender   int    `json:"gender"`
+	Age      int    `json:"age"`
+	Avatar   string `json:"avatar"`
+	Password string `json:"password"`
+	ID       int    `json:"id"`
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateUser,
+		arg.Nickname,
+		arg.Gender,
+		arg.Age,
+		arg.Avatar,
+		arg.Password,
+		arg.ID,
+	)
 }

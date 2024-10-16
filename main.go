@@ -2,7 +2,6 @@ package main
 
 import (
 	"fiber-mvc/app/service"
-	"fiber-mvc/app/sqlc"
 	"fiber-mvc/config"
 
 	_ "fiber-mvc/docs"
@@ -24,7 +23,6 @@ func main() {
 		fmt.Println("---数据库连接失败---", err.Error())
 		return
 	}
-	dbInstance := sqlc.New(dbConn)
 
 	// redis
 	redisInstance := config.NewRedis()
@@ -34,7 +32,7 @@ func main() {
 	}
 
 	// 挂载持久化实例
-	server := service.New(dbInstance, redisInstance)
+	server := service.New(dbConn, redisInstance)
 	// router
 	router.ClientRegister(app, server)
 	router.AdminRegister(app, server)

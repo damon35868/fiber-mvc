@@ -12,7 +12,6 @@ type Controller struct {
 }
 
 func New(service *service.Service) *Controller {
-
 	return &Controller{
 		AdminController:  adminController.New(service),
 		ClientController: clientController.New(service),

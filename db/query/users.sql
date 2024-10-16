@@ -12,10 +12,15 @@ ORDER BY id;
 
 -- name: CreateUser :execresult
 INSERT INTO users (
-  nickname, gender, age, avatar
+  nickname, gender, age, avatar, password
 ) VALUES (
-  ?, ?, ?, ?
+  ?, ?, ?, ?, ?
 );
+
+-- name: UpdateUser :execresult
+UPDATE users
+SET nickname=?, gender=?, age=?, avatar=?, password=?
+WHERE id = ?;
 
 -- name: DeleteUser :exec
 DELETE FROM users

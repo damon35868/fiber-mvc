@@ -9,9 +9,12 @@ import (
 
 func init() {
 	env := os.Getenv("APP_ENV")
+	fmt.Println("---[env]---", env)
+
 	if env == "" {
 		env = "local"
 	}
+
 	err := godotenv.Load(".env." + env)
 
 	if err != nil {

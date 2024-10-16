@@ -3,6 +3,7 @@ package adminService
 import (
 	"encoding/json"
 	"fiber-mvc/app/dto"
+	"fiber-mvc/app/sqlc"
 	"fmt"
 	"os"
 	"time"
@@ -18,8 +19,41 @@ func (s *AdminService) GetUsers(c *fiber.Ctx) error {
 	return common.Response(c, "ok")
 }
 
+// 事务示例
 func (s *AdminService) CreateUser(c *fiber.Ctx, user *dto.UserReq) error {
-	return common.Response(c, user)
+	tx, err := s.Storage.DB.Begin()
+	if err != nil {
+		return common.HttpException(c, fiber.StatusBadGateway, "事务开始失败")
+	}
+	defer tx.Rollback()
+
+	qtx := s.Storage.Repository.WithTx(tx)
+	rel, err := qtx.CreateUser(c.Context(), sqlc.CreateUserParams{
+		Nickname: "test",
+		Age:      18,
+		Gender:   1,
+		Avatar:   "",
+		Password: "123",
+	})
+	if err != nil {
+		return common.HttpException(c, fiber.StatusBadGateway, "创建数据失败")
+	}
+
+	id, _ := rel.LastInsertId()
+
+	if _, err := qtx.UpdateUser(c.Context(), sqlc.UpdateUserParams{
+		ID:       int(id),
+		Nickname: "这是更改的内容",
+		Age:      60,
+		Gender:   0,
+		Avatar:   "更改的头像",
+		Password: "888888",
+	}); err != nil {
+		return common.HttpException(c, fiber.StatusBadGateway, "更新数据失败")
+	}
+
+	tx.Commit()
+	return common.Response(c, true)
 }
 
 func (s *AdminService) Login(c *fiber.Ctx, req *dto.LoginReq) error {

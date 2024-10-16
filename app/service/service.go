@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"fiber-mvc/app/common/types"
 	adminService "fiber-mvc/app/service/admin"
 	clientService "fiber-mvc/app/service/client"
@@ -14,9 +15,10 @@ type Service struct {
 	Client *clientService.ClientService
 }
 
-func New(db *sqlc.Queries, cache *redis.Storage) *Service {
+func New(db *sql.DB, cache *redis.Storage) *Service {
 	storage := &types.Storage{
-		Repository: db,
+		DB:         db,
+		Repository: sqlc.New(db),
 		Cache:      cache,
 	}
 	return &Service{

@@ -60,10 +60,6 @@ func (s *ClientService) Info(c *fiber.Ctx) error {
 	data, err := json.Marshal(db)
 	err = s.Storage.Cache.Set(cacheKey, data, time.Minute*5)
 	if err != nil {
-		return err
-	}
-
-	if err != nil {
 		return common.HttpException(c, fiber.StatusBadRequest, err.Error())
 	}
 

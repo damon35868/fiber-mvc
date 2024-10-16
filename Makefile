@@ -21,8 +21,5 @@ devstart:
 devpro:
 	APP_ENV=production air
 
-buiddev:
-	APP_ENV=development go build	
-
-buidpro:
-	APP_ENV=production go build	
+build:
+	mkdir build && cp .env.production ./build/.env.production && cp .env.development ./build/.env.development && go build -o ./build/main main.go
