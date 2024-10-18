@@ -30,4 +30,10 @@ func AdminRegister(app *fiber.App, server *service.Service) {
 		adminUserApi.Post("/new", handler.AdminController.CreateUser)
 		adminUserApi.Get("/", handler.AdminController.GetUserInfo)
 	}
+
+	// blog
+	blogApi := admin.Group("/blog")
+	{
+		blogApi.Get("/list", handler.AdminController.GetBlogs)
+	}
 }

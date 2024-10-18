@@ -10,10 +10,12 @@ import (
 )
 
 type Querier interface {
+	CountUsers(ctx context.Context) (int64, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error)
 	DeleteUser(ctx context.Context, id int) error
 	GetUserById(ctx context.Context, id int) (User, error)
 	GetUserByNickName(ctx context.Context, nickname string) (User, error)
+	ListBlogs(ctx context.Context, arg ListBlogsParams) ([]ListBlogsRow, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (sql.Result, error)
 }

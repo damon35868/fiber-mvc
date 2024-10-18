@@ -8,6 +8,22 @@ import (
 	"database/sql"
 )
 
+type Blog struct {
+	ID int `json:"id"`
+	// 博客名称
+	Title string `json:"title"`
+	// 描述
+	Desc string `json:"desc"`
+	// 用户ID
+	UserID int `json:"userId"`
+	// 删除时间
+	DeletedAt sql.NullTime `json:"deletedAt"`
+	// 创建时间
+	CreatedAt sql.NullTime `json:"createdAt"`
+	// 更新时间
+	UpdatedAt sql.NullTime `json:"updatedAt"`
+}
+
 type User struct {
 	ID int `json:"id"`
 	// 用户名

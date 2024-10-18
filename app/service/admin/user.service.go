@@ -19,15 +19,23 @@ import (
 func (s *AdminService) GetUsers(c *fiber.Ctx, req dto.PageReqDto) error {
 	limit, Offset := utils.FormatPage(req)
 
+	totalCount, err := s.Storage.Repository.CountUsers(c.Context())
 	users, err := s.Storage.Repository.ListUsers(c.Context(), sqlc.ListUsersParams{
 		Limit:  limit,
 		Offset: Offset,
 	})
-
 	if err != nil {
 		return common.HttpException(c, fiber.StatusBadRequest, err.Error())
 	}
-	return common.Response(c, &users)
+
+	userList := []dto.UserResp{}
+	copier.Copy(&userList, &users)
+
+	return common.Response(c, &dto.PageRespDto{
+		Items:       &userList,
+		TotalCount:  totalCount,
+		HasNextPage: utils.HasNextPage(req.Page, req.PageSize, int(totalCount)),
+	})
 }
 
 // 事务示例

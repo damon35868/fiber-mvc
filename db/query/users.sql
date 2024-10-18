@@ -11,6 +11,9 @@ SELECT * FROM users
 ORDER BY id
 LIMIT ? OFFSET ?;
 
+-- name: CountUsers :one
+SELECT count(*) FROM users;
+
 -- name: CreateUser :execresult
 INSERT INTO users (
   nickname, gender, age, avatar, password

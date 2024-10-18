@@ -10,9 +10,9 @@ type (
 
 type (
 	PageRespDto struct {
-		Items       []interface{} `json:"items"`
-		TotalCount  int           `json:"totalCount"`
-		HasNextPage bool          `json:"hasNextPage"`
+		Items       interface{} `json:"items"`
+		TotalCount  int64       `json:"totalCount"`
+		HasNextPage bool        `json:"hasNextPage"`
 	}
 
 	BaseRespDto struct {
