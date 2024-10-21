@@ -47,3 +47,9 @@ sql:
             go_type:
               type: time.Time
               pointer: false
+
+          - db_type: datetime
+            nullable: true
+            go_type:
+              type: time.Time
+              pointer: false

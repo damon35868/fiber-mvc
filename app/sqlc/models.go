@@ -5,7 +5,7 @@
 package sqlc
 
 import (
-	"database/sql"
+	"time"
 )
 
 type Blog struct {
@@ -17,11 +17,23 @@ type Blog struct {
 	// 用户ID
 	UserID int `json:"userId"`
 	// 删除时间
-	DeletedAt sql.NullTime `json:"deletedAt"`
+	DeletedAt time.Time `json:"deletedAt"`
 	// 创建时间
-	CreatedAt sql.NullTime `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt"`
 	// 更新时间
-	UpdatedAt sql.NullTime `json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type Connect struct {
+	ID int `json:"id"`
+	// 用户地址
+	Address string `json:"address"`
+	// 用户ID
+	UserID int `json:"userId"`
+	// 创建时间
+	CreatedAt time.Time `json:"createdAt"`
+	// 更新时间
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type User struct {
@@ -37,7 +49,7 @@ type User struct {
 	// 头像
 	Avatar string `json:"avatar"`
 	// 创建时间
-	CreatedAt sql.NullTime `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt"`
 	// 更新时间
-	UpdatedAt sql.NullTime `json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }

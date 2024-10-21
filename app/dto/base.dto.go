@@ -2,8 +2,8 @@ package dto
 
 type (
 	PageReqDto struct {
-		Page     int         `json:"page"`
-		PageSize int         `json:"pageSize"`
+		Page     int         `json:"page" validate:"required,min=1"`
+		PageSize int         `json:"pageSize" validate:"required,min=1"`
 		Where    interface{} `json:"where"`
 	}
 )

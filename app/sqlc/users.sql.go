@@ -11,7 +11,8 @@ import (
 )
 
 const countUsers = `-- name: CountUsers :one
-SELECT count(*) FROM users
+SELECT count(*)
+FROM users
 `
 
 func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
@@ -22,11 +23,8 @@ func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
 }
 
 const createUser = `-- name: CreateUser :execresult
-INSERT INTO users (
-  nickname, gender, age, avatar, password
-) VALUES (
-  ?, ?, ?, ?, ?
-)
+INSERT INTO users (nickname, gender, age, avatar, password)
+VALUES (?, ?, ?, ?, ?)
 `
 
 type CreateUserParams struct {
@@ -58,8 +56,10 @@ func (q *Queries) DeleteUser(ctx context.Context, id int) error {
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, nickname, password, gender, age, avatar, created_at, updated_at FROM users
-WHERE id = ? LIMIT 1
+SELECT id, nickname, password, gender, age, avatar, created_at, updated_at
+FROM users
+WHERE id = ?
+LIMIT 1
 `
 
 func (q *Queries) GetUserById(ctx context.Context, id int) (User, error) {
@@ -79,8 +79,10 @@ func (q *Queries) GetUserById(ctx context.Context, id int) (User, error) {
 }
 
 const getUserByNickName = `-- name: GetUserByNickName :one
-SELECT id, nickname, password, gender, age, avatar, created_at, updated_at FROM users
-WHERE nickname = ? LIMIT 1
+SELECT id, nickname, password, gender, age, avatar, created_at, updated_at
+FROM users
+WHERE nickname = ?
+LIMIT 1
 `
 
 func (q *Queries) GetUserByNickName(ctx context.Context, nickname string) (User, error) {
@@ -100,7 +102,8 @@ func (q *Queries) GetUserByNickName(ctx context.Context, nickname string) (User,
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, nickname, password, gender, age, avatar, created_at, updated_at FROM users
+SELECT id, nickname, password, gender, age, avatar, created_at, updated_at
+FROM users
 ORDER BY id
 LIMIT ? OFFSET ?
 `
@@ -144,7 +147,11 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 
 const updateUser = `-- name: UpdateUser :execresult
 UPDATE users
-SET nickname=?, gender=?, age=?, avatar=?, password=?
+SET nickname = ?,
+  gender = ?,
+  age = ?,
+  avatar = ?,
+  password = ?
 WHERE id = ?
 `
 

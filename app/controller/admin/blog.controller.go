@@ -9,12 +9,14 @@ import (
 )
 
 func (s *AdminController) GetBlogs(c *fiber.Ctx) error {
-	var pageDto dto.PageReqDto
-	err := c.QueryParser(&pageDto)
+	var pageDto dto.BlogListDto
+	err := c.BodyParser(&pageDto)
 	if err != nil {
 		return common.HttpException(c, fiber.StatusBadRequest, err.Error())
 	}
-	utils.Validate.Struct(pageDto)
+	if err = utils.Validate.Struct(&pageDto); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
 
 	return s.Service.Admin.GetBlogs(c, pageDto)
 }

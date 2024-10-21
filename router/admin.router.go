@@ -34,6 +34,6 @@ func AdminRegister(app *fiber.App, server *service.Service) {
 	// blog
 	blogApi := admin.Group("/blog")
 	{
-		blogApi.Get("/list", handler.AdminController.GetBlogs)
+		blogApi.Post("/list", handler.AdminController.GetBlogs)
 	}
 }

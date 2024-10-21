@@ -16,6 +16,7 @@ type Service struct {
 }
 
 func New(db *sql.DB, cache *redis.Storage) *Service {
+
 	storage := &types.Storage{
 		DB:         db,
 		Repository: sqlc.New(db),

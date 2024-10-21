@@ -7,8 +7,29 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
+
+const countBlogs = `-- name: CountBlogs :one
+SELECT Count(*)
+FROM blogs
+WHERE blogs.deleted_at IS NULL
+    AND (
+        blogs.desc LIKE ?
+        OR ? IS NULL
+    )
+`
+
+type CountBlogsParams struct {
+	Desc string `json:"desc"`
+}
+
+func (q *Queries) CountBlogs(ctx context.Context, arg CountBlogsParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countBlogs, arg.Desc, arg.Desc)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
 
 const listBlogs = `-- name: ListBlogs :many
 SELECT blogs.id,
@@ -17,30 +38,40 @@ SELECT blogs.id,
     blogs.user_id,
     blogs.created_at,
     blogs.updated_at,
-    users.id, users.nickname, users.password, users.gender, users.age, users.avatar, users.created_at, users.updated_at
+    users.id, users.nickname, users.password, users.gender, users.age, users.avatar, users.created_at, users.updated_at -- sqlc.embed(connects)
 FROM blogs
-    LEFT JOIN users ON users.id = blogs.user_id
-ORDER BY blogs.id
+    LEFT JOIN users ON users.id = blogs.user_id -- LEFT JOIN connects ON users.id = connects.user_id
+WHERE (
+        blogs.desc LIKE ?
+        OR ? IS NULL
+    )
+ORDER BY blogs.id DESC
 LIMIT ? OFFSET ?
 `
 
 type ListBlogsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	Desc   string `json:"desc"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
 }
 
 type ListBlogsRow struct {
-	ID        int          `json:"id"`
-	Title     string       `json:"title"`
-	Desc      string       `json:"desc"`
-	UserID    int          `json:"userId"`
-	CreatedAt sql.NullTime `json:"createdAt"`
-	UpdatedAt sql.NullTime `json:"updatedAt"`
-	User      User         `json:"user"`
+	ID        int       `json:"id"`
+	Title     string    `json:"title"`
+	Desc      string    `json:"desc"`
+	UserID    int       `json:"userId"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	User      User      `json:"user"`
 }
 
 func (q *Queries) ListBlogs(ctx context.Context, arg ListBlogsParams) ([]ListBlogsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listBlogs, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, listBlogs,
+		arg.Desc,
+		arg.Desc,
+		arg.Limit,
+		arg.Offset,
+	)
 	if err != nil {
 		return nil, err
 	}
