@@ -16,29 +16,10 @@ import (
 
 func main() {
 	app := fiber.New(config.NewApp())
-	app.Use(recover.New()) //异常处理
+	app.Use(recover.New()) //处理panic
 
-	dbConn, err := config.NewDB()
-	if err != nil {
-		fmt.Println("---数据库连接失败---", err.Error())
-		return
-	}
-
-	// redis
-	redisInstance := config.NewRedis()
-	if redisInstance == nil {
-		fmt.Println("---Redis连接失败---")
-		return
-	}
-
-	// 挂载持久化实例
-	server := service.New(dbConn, redisInstance)
-	// router
-	router.ClientRegister(app, server)
-	router.AdminRegister(app, server)
-
+	router.Boot(app, service.New(config.NewDB(), config.NewRedis()))
 	// doc
 	app.Get("/swagger/*", swagger.New(config.NewDoc()))
-
-	app.Listen(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT")))
+	app.Listen(fmt.Sprintf("%s:%s", os.Getenv("SERVER_HOST"), os.Getenv("SERVER_PORT")))
 }

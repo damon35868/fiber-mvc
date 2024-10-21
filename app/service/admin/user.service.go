@@ -42,7 +42,7 @@ func (s *AdminService) GetUsers(c *fiber.Ctx, req dto.PageReqDto) error {
 func (s *AdminService) CreateUser(c *fiber.Ctx, user *dto.UserReq) error {
 	tx, err := s.Storage.DB.Begin()
 	if err != nil {
-		return common.HttpException(c, fiber.StatusBadGateway, "事务开始失败")
+		return fiber.NewError(fiber.StatusBadGateway, "事务开始失败")
 	}
 	defer tx.Rollback()
 
@@ -55,7 +55,7 @@ func (s *AdminService) CreateUser(c *fiber.Ctx, user *dto.UserReq) error {
 		Password: "123",
 	})
 	if err != nil {
-		return common.HttpException(c, fiber.StatusBadGateway, "创建数据失败")
+		return fiber.NewError(fiber.StatusBadGateway, "创建数据失败")
 	}
 
 	id, _ := rel.LastInsertId()
@@ -68,7 +68,7 @@ func (s *AdminService) CreateUser(c *fiber.Ctx, user *dto.UserReq) error {
 		Avatar:   "更改的头像",
 		Password: "888888",
 	}); err != nil {
-		return common.HttpException(c, fiber.StatusBadGateway, "更新数据失败")
+		return fiber.NewError(fiber.StatusBadGateway, "更新数据失败")
 	}
 
 	tx.Commit()
@@ -76,10 +76,14 @@ func (s *AdminService) CreateUser(c *fiber.Ctx, user *dto.UserReq) error {
 }
 
 func (s *AdminService) Login(c *fiber.Ctx, req *dto.LoginReq) error {
-	user, _ := s.Storage.Repository.GetUserByNickName(c.Context(), req.Name)
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	user, err := s.Storage.Repository.GetUserByNickName(c.Context(), req.Name)
 	if err != nil {
-		return common.HttpException(c, fiber.StatusBadRequest, "密码错误")
+		return fiber.NewError(fiber.StatusNotFound, "该用户不存在")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "密码错误")
 	}
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -110,15 +114,15 @@ func (s *AdminService) GetUserInfo(c *fiber.Ctx) error {
 	userId := common.GetTokenUserId(c)
 	cacheKey := fmt.Sprintf("user:info:%d", userId)
 
-	d, _ := s.Storage.Cache.Get(cacheKey)
+	cache, _ := s.Storage.Cache.Get(cacheKey)
 	res := s.Storage.Cache.Conn().SetNX(c.Context(), cacheKey, "1", time.Minute*1)
 
 	if status, _ := res.Result(); !status {
-		return common.HttpException(c, fiber.StatusBadRequest, "来晚了，已经被抢走了")
+		return fiber.NewError(fiber.StatusBadRequest, "来晚了，已经被抢走了")
 	}
 
-	if d != nil {
-		_ = json.Unmarshal(d, &resp)
+	if cache != nil {
+		_ = json.Unmarshal(cache, &resp)
 		return common.Response(c, &resp)
 	}
 

@@ -1,7 +1,7 @@
 -- name: ListBlogs :many
 SELECT blogs.id,
     blogs.title,
-    -- blogs.desc,
+    blogs.desc,
     blogs.user_id,
     blogs.created_at,
     blogs.updated_at,

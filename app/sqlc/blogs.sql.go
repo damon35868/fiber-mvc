@@ -13,11 +13,11 @@ import (
 const listBlogs = `-- name: ListBlogs :many
 SELECT blogs.id,
     blogs.title,
-    -- blogs.desc,
+    blogs.desc,
     blogs.user_id,
     blogs.created_at,
     blogs.updated_at,
-    users.uu, users.uu, users.uu, users.uu, users.uu, users.uu, users.uu, users.uu uu
+    users.id, users.nickname, users.password, users.gender, users.age, users.avatar, users.created_at, users.updated_at
 FROM blogs
     LEFT JOIN users ON users.id = blogs.user_id
 ORDER BY blogs.id
@@ -32,6 +32,7 @@ type ListBlogsParams struct {
 type ListBlogsRow struct {
 	ID        int          `json:"id"`
 	Title     string       `json:"title"`
+	Desc      string       `json:"desc"`
 	UserID    int          `json:"userId"`
 	CreatedAt sql.NullTime `json:"createdAt"`
 	UpdatedAt sql.NullTime `json:"updatedAt"`
@@ -50,6 +51,7 @@ func (q *Queries) ListBlogs(ctx context.Context, arg ListBlogsParams) ([]ListBlo
 		if err := rows.Scan(
 			&i.ID,
 			&i.Title,
+			&i.Desc,
 			&i.UserID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
