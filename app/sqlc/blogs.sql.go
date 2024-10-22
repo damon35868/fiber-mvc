@@ -14,18 +14,11 @@ const countBlogs = `-- name: CountBlogs :one
 SELECT Count(*)
 FROM blogs
 WHERE blogs.deleted_at IS NULL
-    AND (
-        blogs.desc LIKE ?
-        OR ? IS NULL
-    )
+    AND blogs.desc LIKE ?
 `
 
-type CountBlogsParams struct {
-	Desc string `json:"desc"`
-}
-
-func (q *Queries) CountBlogs(ctx context.Context, arg CountBlogsParams) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countBlogs, arg.Desc, arg.Desc)
+func (q *Queries) CountBlogs(ctx context.Context, desc string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countBlogs, desc)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -38,21 +31,16 @@ SELECT blogs.id,
     blogs.user_id,
     blogs.created_at,
     blogs.updated_at,
-    users.id, users.nickname, users.password, users.gender, users.age, users.avatar, users.created_at, users.updated_at -- sqlc.embed(connects)
+    users.id, users.nickname, users.password, users.gender, users.age, users.avatar, users.created_at, users.updated_at
 FROM blogs
-    LEFT JOIN users ON users.id = blogs.user_id -- LEFT JOIN connects ON users.id = connects.user_id
-WHERE (
-        blogs.desc LIKE ?
-        OR ? IS NULL
-    )
+    LEFT JOIN users ON users.id = blogs.user_id -- WHERE blogs.desc LIKE sqlc.narg('desc')
 ORDER BY blogs.id DESC
 LIMIT ? OFFSET ?
 `
 
 type ListBlogsParams struct {
-	Desc   string `json:"desc"`
-	Limit  int32  `json:"limit"`
-	Offset int32  `json:"offset"`
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
 type ListBlogsRow struct {
@@ -66,12 +54,7 @@ type ListBlogsRow struct {
 }
 
 func (q *Queries) ListBlogs(ctx context.Context, arg ListBlogsParams) ([]ListBlogsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listBlogs,
-		arg.Desc,
-		arg.Desc,
-		arg.Limit,
-		arg.Offset,
-	)
+	rows, err := q.db.QueryContext(ctx, listBlogs, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

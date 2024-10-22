@@ -10,7 +10,7 @@ import (
 )
 
 type Querier interface {
-	CountBlogs(ctx context.Context, arg CountBlogsParams) (int64, error)
+	CountBlogs(ctx context.Context, desc string) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error)
 	DeleteUser(ctx context.Context, id int) error
