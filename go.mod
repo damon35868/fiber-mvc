@@ -1,9 +1,9 @@
 module fiber-mvc
 
-go 1.23.2
+go 1.23
 
 require (
-	github.com/damon35868/finalx-gofiber v0.0.2
+	github.com/damon35868/finalx-gofiber v0.0.5
 	github.com/go-playground/validator/v10 v10.22.1
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gofiber/contrib/jwt v1.0.10

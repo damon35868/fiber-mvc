@@ -14,9 +14,8 @@ import (
 func ClientRegister(app fiber.Router, server *service.Service) {
 	handler := controller.New(server)
 	client := app.Group(constant.Client)
-
-	clientUserApi := client.Group("/user")
-	clientUserApi.Post("/login", handler.ClientController.Login)
+	// 不走JWT鉴权
+	client.Post("/user/login", handler.ClientController.Login)
 
 	// JWT
 	client.Use(jwtware.New(jwtware.Config{
@@ -24,5 +23,8 @@ func ClientRegister(app fiber.Router, server *service.Service) {
 		ErrorHandler: common.JWTErrorHandler,
 	}))
 
-	clientUserApi.Get("/", handler.ClientController.Info)
+	clientUserApi := client.Group("/user")
+	{
+		clientUserApi.Get("/info", handler.ClientController.Info)
+	}
 }

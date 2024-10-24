@@ -14,9 +14,8 @@ import (
 func AdminRegister(app *fiber.App, server *service.Service) {
 	handler := controller.New(server)
 	admin := app.Group(constant.Admin)
-
-	adminUserApi := admin.Group("/user")
-	adminUserApi.Post("/login", handler.AdminController.Login)
+	// 不走JWT鉴权
+	admin.Post("/user/login", handler.AdminController.Login)
 
 	// JWT
 	admin.Use(jwtware.New(jwtware.Config{
@@ -25,6 +24,7 @@ func AdminRegister(app *fiber.App, server *service.Service) {
 	}))
 
 	// user
+	adminUserApi := admin.Group("/user")
 	{
 		adminUserApi.Get("/list", handler.AdminController.GetUsers)
 		adminUserApi.Post("/new", handler.AdminController.CreateUser)
