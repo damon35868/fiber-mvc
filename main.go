@@ -3,6 +3,7 @@ package main
 import (
 	"fiber-mvc/app/service"
 	"fiber-mvc/config"
+	"fiber-mvc/schedule"
 
 	_ "fiber-mvc/docs"
 	"fiber-mvc/router"
@@ -23,6 +24,8 @@ func main() {
 	app.Use(cors.New())
 	app.Use(recover.New())
 
-	router.Boot(app, service.New(config.NewDB(), config.NewRedis()))
+	serviceInstance := service.New(config.NewDB(), config.NewRedis())
+	schedule.Boot(serviceInstance)
+	router.Boot(app, serviceInstance)
 	app.Listen(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT")))
 }

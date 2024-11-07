@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fiber-mvc/app/controller"
 	"fiber-mvc/app/service"
 	"fiber-mvc/config"
 
@@ -22,7 +23,8 @@ func commonRegister(app *fiber.App) {
 }
 
 func Boot(app *fiber.App, server *service.Service) {
+	handler := controller.New(server)
 	commonRegister(app)
-	ClientRegister(app, server)
-	AdminRegister(app, server)
+	ClientRegister(app, handler)
+	AdminRegister(app, handler)
 }

@@ -3,7 +3,6 @@ package router
 import (
 	"fiber-mvc/app/common/constant"
 	"fiber-mvc/app/controller"
-	"fiber-mvc/app/service"
 	"os"
 
 	"github.com/damon35868/finalx-gofiber/common"
@@ -11,8 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func ClientRegister(app fiber.Router, server *service.Service) {
-	handler := controller.New(server)
+func ClientRegister(app fiber.Router, handler *controller.Controller) {
 	client := app.Group(constant.Client)
 	// 不走JWT鉴权
 	client.Post("/user/login", handler.ClientController.Login)

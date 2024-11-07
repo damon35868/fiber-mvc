@@ -3,7 +3,6 @@ package router
 import (
 	"fiber-mvc/app/common/constant"
 	"fiber-mvc/app/controller"
-	"fiber-mvc/app/service"
 	"os"
 
 	"github.com/damon35868/finalx-gofiber/common"
@@ -11,8 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func AdminRegister(app *fiber.App, server *service.Service) {
-	handler := controller.New(server)
+func AdminRegister(app *fiber.App, handler *controller.Controller) {
 	admin := app.Group(constant.Admin)
 	// 不走JWT鉴权
 	admin.Post("/user/login", handler.AdminController.Login)
