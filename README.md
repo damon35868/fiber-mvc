@@ -28,20 +28,20 @@ $ git clone https://github.com/damon35868/fiber-mvc.git
 $ make dev
 
 # 启动本地环境 development mode 获取 .env.development环境变量
-$ make devstart
+$ make dev.start
 
 # 启动本地环境 production mode 获取 .env.production环境变量
-$ make devpro
+$ make dev.pro
 
 # 执行数据库迁移
-$ make migrateup
+$ make migrate.up
 
 # 执行数据库回滚
-$ make migratedown
+$ make migrate.down
 
 # 生成model及增删改查
-$ make modelgen
+$ make gen.model
 
 # 生成文档
-$ make docgen
+$ make gen.doc
 ```
