@@ -1,24 +1,24 @@
-DB_URL=mysql://root:3586878@tcp(127.0.0.1:3306)/go_fiber
+DB_URL=mysql://root:123456@tcp(127.0.0.1:3306)/go_fiber
 
-migrateup:
+migrate.up:
 	migrate -path db/migrate -database "$(DB_URL)" up 1
 
-migratedown:
+migrate.down:
 	migrate -path db/migrate -database "$(DB_URL)" down 1
 
-modelgen:
+gen.model:
 	sqlc generate
 
-docgen:
+gen.doc:
 	swag init
 
 dev:
 	APP_ENV=local air
 
-devstart:
+dev.start:
 	APP_ENV=development air
 
-devpro:
+dev.pro:
 	APP_ENV=production air
 
 build:
