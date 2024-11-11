@@ -126,7 +126,7 @@ func (s *AdminService) GetUserInfo(c *fiber.Ctx) error {
 		return common.Response(c, &resp)
 	}
 
-	user, err := s.Storage.Repository.GetUserById(c.Context(), userId)
+	user, err := s.Storage.Repository.GetUserById(c.Context(), int(userId))
 	data, err := json.Marshal(user)
 
 	err = s.Storage.Cache.Set(cacheKey, data, time.Minute*5)

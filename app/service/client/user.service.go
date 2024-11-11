@@ -56,7 +56,7 @@ func (s *ClientService) Info(c *fiber.Ctx) error {
 		return common.Response(c, &user)
 	}
 
-	db, err := s.Storage.Repository.GetUserById(c.Context(), userId)
+	db, err := s.Storage.Repository.GetUserById(c.Context(), int(userId))
 	data, err := json.Marshal(db)
 	err = s.Storage.Cache.Set(cacheKey, data, time.Minute*5)
 	if err != nil {
