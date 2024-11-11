@@ -14,11 +14,28 @@
 - 结构化环境
 - 命令行工具
 - 抽离公共异常处理及返回体
+- 集成定时任务
 
 ## Installation/安装
 
 ```bash
 $ git clone https://github.com/damon35868/fiber-mvc.git
+```
+
+## initialization/初始化
+
+```bash
+# install golang-migrate 非Mac请下载二进制 https://github.com/golang-migrate/migrate/releases
+$ brew install golang-migrate
+
+# install sqlc
+$ go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
+# install air
+$ go install github.com/air-verse/air@latest
+
+# 添加环境变量并设置你的参数
+$ cp .env.example ./.env.local && cp .env.example ./.env.development && cp .env.example ./.env.production
 ```
 
 ## cmd/命令行
@@ -34,10 +51,10 @@ $ make dev.start
 $ make dev.pro
 
 # 执行数据库迁移
-$ make migrate.up
+$ make migrate
 
 # 执行数据库回滚
-$ make migrate.down
+$ make migrate.rollback
 
 # 生成model及增删改查
 $ make gen.model

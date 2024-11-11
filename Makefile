@@ -1,10 +1,11 @@
+level=1
 DB_URL=mysql://root:123456@tcp(127.0.0.1:3306)/go_fiber
 
-migrate.up:
-	migrate -path db/migrate -database "$(DB_URL)" up 1
+migrate:
+	migrate -path db/migrate -database "$(DB_URL)" up $(level)
 
-migrate.down:
-	migrate -path db/migrate -database "$(DB_URL)" down 1
+migrate.rollback:
+	migrate -path db/migrate -database "$(DB_URL)" down $(level)
 
 gen.model:
 	sqlc generate
